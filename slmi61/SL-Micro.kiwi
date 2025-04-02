@@ -288,7 +288,7 @@
             <luksformat>
                 <option name="--cipher" value="aes-xts-plain64"/>
             </luksformat>
-            <bootloader name="grub2" console="gfxterm" use_disk_password="true" />
+            <bootloader name="grub2" console="gfxterm" />
             <systemdisk>
                 <volume name="home"/>
                 <volume name="root"/>
