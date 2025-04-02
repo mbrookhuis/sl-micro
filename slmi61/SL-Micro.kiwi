@@ -261,49 +261,6 @@
         </profile>
     </profiles>
 
-    <preferences profiles="x86-encrypted,x86-rt-encrypted">
-        <version>6.1</version>
-        <packagemanager>zypper</packagemanager>
-        <bootsplash-theme>SLE</bootsplash-theme>
-        <bootloader-theme>SLE</bootloader-theme>
-        <rpm-excludedocs>true</rpm-excludedocs>
-        <locale>en_US</locale>
-        <type
-            image="oem"
-            initrd_system="dracut"
-            filesystem="btrfs"
-            firmware="uefi"
-            kernelcmdline="console=ttyS0,115200 console=tty0 security=selinux selinux=1 quiet systemd.show_status=1 net.ifnames=0"
-            bootpartition="false"
-            bootkernel="custom"
-            devicepersistency="by-uuid"
-            btrfs_root_is_snapshot="true"
-            btrfs_root_is_readonly_snapshot="true"
-            btrfs_quota_groups="true"
-            luks_version="luks2"
-            luks="1234"
-	    luks_randomize="false"
-	    luks_pbkdf="pbkdf2"
-        >
-            <luksformat>
-                <option name="--cipher" value="aes-xts-plain64"/>
-            </luksformat>
-            <bootloader name="grub2" console="gfxterm" />
-            <systemdisk>
-                <volume name="home"/>
-                <volume name="root"/>
-                <!-- on tmpfs jsc#SMO-2                <volume name="tmp"/> -->
-                <volume name="opt"/>
-                <volume name="srv"/>
-                <volume name="boot/grub2/i386-pc"/>
-                <volume name="boot/grub2/x86_64-efi" mountpoint="boot/grub2/x86_64-efi"/>
-                <volume name="boot/writable"/>
-                <volume name="usr/local"/>
-                <volume name="var" copy_on_write="false"/>
-            </systemdisk>
-            <size unit="G">4</size>
-        </type>
-    </preferences>
     <preferences profiles="x86,x86-rt">
         <version>6.1</version>
         <packagemanager>zypper</packagemanager>
