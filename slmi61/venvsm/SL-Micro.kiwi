@@ -67,7 +67,7 @@
     <packages type="image" profiles="sl61-venv-sm">
         <namedCollection name="base_transactional"/>
         <package name="patterns-base-transactional"/>
-    	<package name="venv-salt_minion"/>
+    	<package name="venv-salt-minion"/>
         <namedCollection name="cockpit"/>
         <package name="patterns-base-cockpit"/>
         <namedCollection name="selinux"/>
