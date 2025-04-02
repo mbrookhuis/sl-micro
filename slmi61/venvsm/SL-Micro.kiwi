@@ -18,7 +18,7 @@
         <profile name="x86-self_install" description="Raw disk for x86_64 - uEFI" arch="x86_64">
             <requires profile="bootloader"/>
         </profile>
-
+        <profile name="bootloader" description="Bootloader files for x86_64 and aarch64"/>
         <profile name="self_install" description="Self Installing ISO media"/>
         <profile name="sl61-venv-sm" description="Self Installing ISO media"/>
 
