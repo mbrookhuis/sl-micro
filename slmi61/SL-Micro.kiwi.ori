@@ -260,8 +260,8 @@
             <requires profile="self_install"/>
         </profile>
 
-    <profile name="SL61-SelfInstall-VenvSaltMinion" description="SL Micro venv-salt-minion as raw image with uEFI boot - SelfInstall" arch="x86_64">
-        <requires profile="sl61-venv-sm"/>
+    <profile name="MB1-SelfInstall" description="SL Micro with Podman as raw image with uEFI boot - SelfInstall" arch="x86_64">
+        <requires profile="container-host"/>
         <requires profile="x86-self_install"/>
         <requires profile="self_install"/>
     </profile>
@@ -852,23 +852,6 @@
 	<package name="lzop"/>
         <namedCollection name="container_runtime_podman"/>
         <package name="patterns-container-runtime_podman"/> 
-        <namedCollection name="cockpit"/>
-        <package name="patterns-base-cockpit"/>
-        <namedCollection name="selinux"/>
-        <package name="patterns-base-selinux"/>
-        <package name="suseconnect-ng"/>
-        <package name="SL-Micro-release"/>
-        <package name="grub2-branding-SLE" arch="x86_64,aarch64"/>
-        <package name="systemd-default-settings-branding-SLE-Micro"/>
-        <package name="firewalld"/>
-        <package name="wpa_supplicant" arch="x86_64,aarch64"/>
-	<package name="libpwquality-tools"/>
-    </packages>
-
-    <packages type="image" profiles="sl61-venv-sm">
-        <namedCollection name="base_transactional"/>
-        <package name="patterns-base-transactional"/>
-    	<package name="venv-salt_minion"/>
         <namedCollection name="cockpit"/>
         <package name="patterns-base-cockpit"/>
         <namedCollection name="selinux"/>
