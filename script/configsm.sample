@@ -1,0 +1,31 @@
+server: https://mbsuma50.mb.int
+user: admin
+password: suse1234
+log_dir: /var/log/create_slm_install.log
+timeout: 1200
+wait_between_events_check: 30
+combustion_dir: /var/lib/containers/storage/volumes/srv-www/_data/htdocs/pub/slmicro61_dev/combustion
+ignition_dir: /var/lib/containers/storage/volumes/srv-www/_data/htdocs/pub/slmicro61_dev/ignition
+
+
+loglevel:
+   # LOGLEVELS:
+   # DEBUG: info warning error debug
+   # INFO: info warning error
+   # WARNING: warning error
+   # ERROR: error
+   file: DEBUG
+   screen: DEBUG
+
+error_handling:
+  # fatal: report error, exit script
+  # error: report error, continue
+  # warning: report warning, continue
+   script: error
+   update: error
+   spmig: fatal
+   configupdate: error
+   reboot: fatal
+   timeout_passed: fatal
+
+
