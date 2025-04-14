@@ -1,10 +1,11 @@
-server: <SUSE Manager Server FQDN>
-user: <USER with enough righst>
-password: <password of the above user>
-log_dir: /var/log/SUSE_Manager_tools
+server: 192.168.2.150
+user: admin
+password: suse1234
 timeout: 1200
 wait_between_events_check: 30
-
+ssl_certificate_check: false
+log_dir: /var/log/create_slm_install
+template_dir: /opt/csi/templates
 
 loglevel:
    # LOGLEVELS:
@@ -13,17 +14,29 @@ loglevel:
    # WARNING: warning error
    # ERROR: error
    file: DEBUG
-   screen: INFO
+   screen: DEBUG
+
+server_types:
+   mi61_default:
+      image_path: http://192.168.100.50/pub/slmicro61/
+      installation_path: /var/lib/containers/storage/volumes/srv-www/_data/htdocs/pub/installations/mi61-default
+      distribution_assigned_channel: sm61-dev-sl-micro-6.1-pool-x86_64
+      distribution_tree_path: /srv/www/distributions/SLE-Micro-6.1-x86_64
+      distribution_kernel_options: rd.kiwi.install.pass.bootparam=true rd.kiwi.install.pxe rd.kiwi.install.image=http://192.168.100.50/pub/slmicro61/SL-Micro.x86_64-6.1.xz console=ttyS0,115200 console=tty0 security=selinux selinux=1 quiet systemd.show_status=1 net.ifnames=0
+   mi61_extra:
+      image_path: http://192.168.100.50/pub/slmicro61/
+      installation_path: /var/lib/containers/storage/volumes/srv-www/_data/htdocs/pub/installations/mi61-extra
+      distribution_assigned_channel: sm61-dev-sl-micro-6.1-pool-x86_64
+      distribution_tree_path: /srv/www/distributions/SLE-Micro-6.1-x86_64
+      distribution_kernel_options: rd.kiwi.install.pass.bootparam=true rd.kiwi.install.pxe rd.kiwi.install.image=http://192.168.100.50/pub/slmicro61/SL-Micro.x86_64-6.1.xz console=ttyS0,115200 console=tty0 security=selinux selinux=1 quiet systemd.show_status=1 net.ifnames=0
 
 error_handling:
-  # fatal: report error, exit script
-  # error: report error, continue
-  # warning: report warning, continue
+   # fatal: report error, exit script
+   # error: report error, continue
+   # warning: report warning, continue
    script: error
    update: error
    spmig: fatal
    configupdate: error
    reboot: fatal
    timeout_passed: fatal
-
-

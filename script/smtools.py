@@ -26,6 +26,7 @@ import datetime
 import socket
 import yaml
 import time
+import ssl
 
 
 def load_yaml(stream):
@@ -60,7 +61,7 @@ class SMTools:
     program = "smtools"
     systemid = 0
 
-    def __init__(self, program, hostname="", hostbased=False):
+    def __init__(self, program):
         """
         Constructor
         LOGLEVELS:
@@ -69,19 +70,11 @@ class SMTools:
         WARNING: warning error
         ERROR: error
         """
-        self.hostname = hostname
-        self.hostbased = hostbased
         self.program = program
         log_dir = CONFIGSM['log_dir']
-        if self.hostbased:
-            log_dir += "/" + self.program
-            if not os.path.exists(log_dir):
-                os.makedirs(log_dir)
-            log_name = log_dir + "/" + self.hostname + ".log"
-        else:
-            if not os.path.exists(CONFIGSM['log_dir']):
-                os.makedirs(CONFIGSM['log_dir'])
-            log_name = os.path.join(log_dir, self.program + ".log")
+        if not os.path.exists(CONFIGSM['log_dir']):
+            os.makedirs(CONFIGSM['log_dir'])
+        log_name = os.path.join(log_dir, self.program + ".log")
 
         formatter = logging.Formatter('%(asctime)s |  {} | %(levelname)s | %(message)s'.format(self.hostname),
                                       '%d-%m-%Y %H:%M:%S')
@@ -94,16 +87,10 @@ class SMTools:
         console.setLevel(CONFIGSM['loglevel']['screen'].upper())
         console.setFormatter(formatter)
 
-        if self.hostbased:
-            self.log = logging.getLogger(self.hostname)
-            self.log.setLevel(logging.DEBUG)
-            self.log.addHandler(console)
-            self.log.addHandler(fh)
-        else:
-            self.log = logging.getLogger('')
-            self.log.setLevel(logging.DEBUG)
-            self.log.addHandler(console)
-            self.log.addHandler(fh)
+        self.log = logging.getLogger('')
+        self.log.setLevel(logging.DEBUG)
+        self.log.addHandler(console)
+        self.log.addHandler(fh)
 
     def minor_error(self, errtxt):
         """
@@ -186,17 +173,39 @@ class SMTools:
         """
         Log in to SUSE Manager Server.
         """
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        try:
-            sock.connect_ex((CONFIGSM['server'], 443))
-        except:
-            self.fatal_error("Unable to login to SUSE Manager server {}".format(CONFIGSM['server']))
+        if CONFIGSM['ssl_certificate_check']:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            try:
+                sock.connect_ex((CONFIGSM['server'], 443))
+            except:
+                self.fatal_error("Unable to login to SUSE Manager server {} SOCKET".format(CONFIGSM['server']))
 
-        self.client = xmlrpc.client.Server("https://" + CONFIGSM['server'] + "/rpc/api")
-        try:
-            self.session = self.client.auth.login(CONFIGSM['user'], CONFIGSM['password'])
-        except xmlrpc.client.Fault:
-            self.fatal_error("Unable to login to SUSE Manager server {}".format(CONFIGSM['server']))
+            self.client = xmlrpc.client.Server("https://" + CONFIGSM['server'] + "/rpc/api")
+            try:
+                self.session = self.client.auth.login(CONFIGSM['user'], CONFIGSM['password'])
+            except:
+                self.fatal_error("Unable to login to SUSE Manager server {} XMLRPC".format(CONFIGSM['server']))
+        else:
+            context = ssl.create_default_context()
+            context.check_hostname = False
+            context.verify_mode = ssl.CERT_NONE
+
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            try:
+                sock.connect_ex((CONFIGSM['server'], 443))
+            except:
+                self.fatal_error("Unable to login to SUSE Manager server {} SOCKET".format(CONFIGSM['server']))
+            context_xmlrpc = ssl.create_default_context()
+            context_xmlrpc.check_hostname = False
+            context_xmlrpc.verify_mode = ssl.CERT_NONE
+            transport = xmlrpc.client.Transport()
+            transport._ssl_wrap = lambda host, **kwargs: context_xmlrpc.wrap_socket(socket.create_connection((host, 443)), server_hostname=host)
+            self.client = xmlrpc.client.Server("https://" + CONFIGSM['server'] + "/rpc/api", transport=transport)
+            try:
+                self.session = self.client.auth.login(CONFIGSM['user'], CONFIGSM['password'])
+            except:
+                self.fatal_error("Unable to login to SUSE Manager server {} XMLRPC".format(CONFIGSM['server']))
+
 
     def suman_logout(self):
         """

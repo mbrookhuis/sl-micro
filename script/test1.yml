@@ -1,0 +1,29 @@
+mi61-01:
+  ipaddress: 192.168.100.151
+  subnetmask: 24
+  gateway: 192.168.100.1
+  dnsserver: [192.168.100.1, 192.168.2.100]
+  domain: mb.int
+  server_type: mi61_default
+  install_device: /dev/vda
+  template_combustion: mi61-default
+  template_ignition: mi61-default
+  install_on_disk: /dev/vda
+  mac_address:
+  parameters:
+    test1: blablabla
+    test2: bla
+
+mi61-02:
+  ipaddress: 192.168.100.152
+  subnetmask: 255.255.255.0
+  gateway: 192.168.100.1
+  dnsserver: [192.168.100.1, 192.168.2.100]
+  domain: mb.int
+  template_combustion: mi61-default
+  template_ignition: mi61-default
+  install_device: /dev/vda
+  sserver_type: mi61_extra
+  parameters:
+    test1: blablabla
+    test2: bla
