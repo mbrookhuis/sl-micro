@@ -1,0 +1,45 @@
+{
+  "ignition": {
+    "version": "3.2.0"
+  },
+  "passwd": {
+    "users": [
+      {
+        "name": "root",
+        "passwordHash": "$2a$10$FIcYc4mnAnaKi0XgnsiGW.8b9B9mf9/fcIH4gok.WXeRN2//INCqm",
+        "sshAuthorizedKeys": [
+          "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCaZ1YSiIDIWTMzcAg/tMikj/qVSbH4jTxPR5UKU9ejZHVtkYvFj27hIrmBRxnuy41Yg8jdBEYa+sBrMsE7hQ0AORIKs6r1EsBi6aeOrrV4+hhA7t/1AgQlnJrpytr9Ab/ibBNusWdn21zlgkH28sOP+xMBMfDqcYB+UL67LC395nsMUdvVy0R3hgjHV4KEU581Vmbs8ult8jtU/sEJS/d0FBLIsV+8A1xSGooCCoClphVKmAXPVuBrlj0C6tkxU3mJ2bZ6kiskgX4SM6I3s1ssOH7eS2RG5Z6KGS7Lk5vP7qXz7ri7abqpvkSHCe1MIzc7hMggG98KePe4StCKkrK9 root@mblab\nssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC60MkiI76TZJ+mbtuWXGw02pxH/5i0HJKI/O6lhtF/fTOTpCYPZ6daHwMaoxpJmbMLIo7lRR9vLS5xK0LifiHl5gRUR2nRBs7fvDPvJZllCNnvXopukTPf0cQdpTa33jOo56bDntFbGy+SbIwTpOcFstikTcuHPZrFq48b76DITXe+bY7RmBj4KQJ26+aK2j/JB/gE3Fxf594iQCYKHQtPq5/pNthxuBW+a0RdIiJLXkC/ZZPmd+9jfBpCqB0wV6fVEpSH/GUf5zVfKbh5tXKL7pCBEDX8fjsGFCocMeIuyguy2szSNdszu2e8foO0hx9m9gfG2tiuRMeYir6yQEqj mbrookhuis@mplaptop.suse.com"
+        ]
+      }
+    ]
+  },
+  "storage": {
+    "files": [
+      {
+        "path": "/etc/hostname",
+        "mode": 420,
+        "overwrite": true,
+        "contents": {
+          "source": "data:,REPL_HOSTNAME"
+        }
+      },
+      {
+        "path": "/etc/locale.conf",
+        "mode": 420,
+        "overwrite": true,
+        "contents": {
+          "source": "data:,LANG=en_US.UTF-8"
+        }
+      },
+      {
+        "path": "/etc/NetworkManager/conf.d/noauto.conf",
+        "mode": 420,
+        "overwrite": true,
+        "contents": {
+          "source": "data:text/plain;charset=utf-8;base64,W21haW5dCiMgRG8gbm90IGRvIGF1dG9tYXRpYyAoREhDUC9TTEFBQykgY29uZmlndXJhdGlvbiBvbiBldGhlcm5ldCBkZXZpY2VzCiMgd2l0aCBubyBvdGhlciBtYXRjaGluZyBjb25uZWN0aW9ucy4Kbm8tYXV0by1kZWZhdWx0PSoK",
+          "human_read": "[main]\n# Do not do automatic (DHCP/SLAAC) configuration on ethernet devices\n# with no other matching connections.\nno-auto-default=*\n"
+        }
+      }
+    ]
+  }
+}

@@ -5,11 +5,10 @@ mi61-01:
   dnsserver: [192.168.100.1, 192.168.2.100]
   domain: mb.int
   server_type: mi61_default
-  install_device: /dev/vda
   template_combustion: mi61-default
   template_ignition: mi61-default
+  mac_address: "52:54:00:29:09:42"
   install_on_disk: /dev/vda
-  mac_address:
   parameters:
     test1: blablabla
     test2: bla
@@ -22,8 +21,8 @@ mi61-02:
   domain: mb.int
   template_combustion: mi61-default
   template_ignition: mi61-default
-  install_device: /dev/vda
-  sserver_type: mi61_extra
+  server_type: mi61_extra
+  install_on_disk: /dev/vda
   parameters:
     test1: blablabla
     test2: bla
