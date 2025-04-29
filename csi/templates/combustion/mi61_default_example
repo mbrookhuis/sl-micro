@@ -1,0 +1,134 @@
+#!/bin/bash
+# combustion: network prepare
+# script generated with https://opensuse.github.io/fuel-ignition/
+
+#-- Start
+#-- End
+
+umask 077 # Required for NM config
+mkdir -p /etc/NetworkManager/system-connections/
+cat >/etc/NetworkManager/system-connections/eth0.nmconnection <<-EOF
+
+[connection]
+id=eth0
+type=ethernet
+interface-name=eth0
+
+[ipv4]
+dns-search=${DOMAIN}
+method=manual
+address1=${IPADDRESS}/${NETWORK},${GATEWAY}
+dns=${DNSSERVER}
+
+[ipv6]
+dns-search=
+addr-gen-mode=eui64
+method=ignore
+EOF
+
+
+if [ "${1-}" = "--prepare" ]; then
+  exit 0
+fi
+
+# Redirect output to the console
+exec > >(exec tee -a /var/log/combustion.log -a /dev/tty0) 2>&1
+
+echo "Starting configuration.."
+
+set -x
+
+# Keyboard
+systemd-firstboot --force --keymap=us-intl
+
+# Timezone
+systemd-firstboot --force --timezone=Europe/Amsterdam
+
+# enable cockpit port :9090
+systemctl enable cockpit.socket
+
+# Salt Minion
+zypper ar --no-gpgcheck https://mbsuma50.mb.int:443/rhn/manager/download/sm61-dev-sl-micro-6.1-pool-x86_64?ssl_verify=no sm61-dev-sl-micro-6.1-pool-x86_64
+zypper ar --no-gpgcheck https://mbsuma50.mb.int:443/rhn/manager/download/sm61-dev-suse-manager-tools-for-sl-micro-6.1-x86_64?ssl_verify=no sm61-dev-suse-manager-tools-for-sl-micro-6.1-x86_64
+zypper --non-interactive install venv-salt-minion
+zypper lr 1 2
+
+cat <<EOF > /etc/venv-salt-minion/minion.d/susemanager.conf
+master: mbsuma50.mb.int
+
+grains:
+  susemanager:
+    activation_key: "$ACTIVATION_KEY"
+
+server_id_use_crc: adler32
+enable_legacy_startup_events: False
+enable_fqdns_grains: False
+EOF
+
+systemctl enable venv-salt-minion.service
+
+# execute script on first boot
+cat <<EOF > /etc/after-first-boot.sh
+#!/bin/bash
+exec > >(exec tee -a /var/log/after-run.log -a /dev/tty0) 2>&1
+
+sleep 60
+
+transactional-update -n up
+
+systemctl disable afterfirstboot
+
+venv-salt-call state.apply
+
+rm /etc/systemd/system/afterfirstboot.service
+rm /etc/after-first-boot.sh
+
+exec 1>&- 2>&-; wait;
+
+reboot now
+EOF
+
+chmod 777 /etc/after-first-boot.sh
+cp /etc/after-first-boot.sh /usr/local/bin/after-first-boot.sh
+
+cat <<EOF > /etc/systemd/system/afterfirstboot.service
+[Unit]
+Description=Check Disk Space on /home directory at Startup
+After=mysql.service
+
+[Service]
+ExecStart=/etc/after-first-boot.sh
+
+[Install]
+WantedBy=default.target
+EOF
+
+ln -s /etc/systemd/system/afterfirstboot.service /etc/systemd/system/default.target.wants/afterfirstboot.service
+
+# reboot server when compustion is done
+cat <<EOF > /etc/systemd/system/selfinstallreboot.service
+[Unit]
+Description=SelfInstall Image Reboot after Firstboot (to ensure ignition and such runs)
+After=systemd-machine-id-commit.service
+Before=jeos-firstboot.service
+
+[Service]
+Type=oneshot
+ExecStart=rm /etc/systemd/system/selfinstallreboot.service
+ExecStart=rm /etc/systemd/system/default.target.wants/selfinstallreboot.service
+ExecStart=systemctl --no-block reboot
+
+[Install]
+WantedBy=default.target
+EOF
+
+ln -s /etc/systemd/system/selfinstallreboot.service /etc/systemd/system/default.target.wants/selfinstallreboot.service
+
+
+# Leave a marker
+echo "Configured with combustion" > /etc/issue.d/combustion
+
+# Close outputs and wait for tee to finish.
+exec 1>&- 2>&-; wait;
+
+init 6

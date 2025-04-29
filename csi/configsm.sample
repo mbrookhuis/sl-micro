@@ -1,12 +1,11 @@
 server: mbsuma50.mb.int
 user: admin
-password: suse1234
+password: <REDIRECTED>
 timeout: 1200
 wait_between_events_check: 30
 ssl_certificate_check: false
 log_dir: /var/log/create_slm_install
 template_dir: /opt/csi/templates
-
 
 server_types:
    mi61_default:
@@ -22,9 +21,6 @@ server_types:
       distribution_tree_path: /srv/www/distributions/SLE-Micro-6.1-x86_64
       distribution_kernel_options: rd.kiwi.install.pass.bootparam=true rd.kiwi.install.pxe rd.kiwi.install.image=http://192.168.100.50/pub/slmicro61/SL-Micro.x86_64-6.1.xz console=ttyS0,115200 console=tty0 security=selinux selinux=1 quiet systemd.show_status=1 net.ifnames=0
 
-
-
-
 loglevel:
    # LOGLEVELS:
    # DEBUG: info warning error debug
@@ -34,13 +30,3 @@ loglevel:
    file: DEBUG
    screen: DEBUG
 
-error_handling:
-   # fatal: report error, exit script
-   # error: report error, continue
-   # warning: report warning, continue
-   script: error
-   update: error
-   spmig: fatal
-   configupdate: error
-   reboot: fatal
-   timeout_passed: fatal

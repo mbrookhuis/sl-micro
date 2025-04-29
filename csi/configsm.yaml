@@ -1,0 +1,25 @@
+server: <SUSE MANAGER SERVER FQDN>
+user: <User with enough rights to create distribution and profiles and delete servers>
+password: <password of the above user>
+timeout: 1200
+wait_between_events_check: 30
+ssl_certificate_check: true     # set to false when SMLM uses selfsigned passwords
+log_dir: <directory to store logs>
+template_dir: <directory to store the templates>  # e.g. /opt/csi/templates
+
+server_types:
+   <server_type_1>:
+      image_path: <URL where the images are stored>  # e.g. http://<FQDN SMLM>/pub/images/<server_type_1>
+      installation_path: <directory to store combustion and ignition files>  # e.g. /var/lib/containers/storage/volumes/srv-www/_data/htdocs/pub/installations/mi61-default
+      distribution_assigned_channel: <base channel that should be used>
+      distribution_tree_path: <path in the container where the kernel and init file are stored>  # e.g. /srv/www/distributions/SLE-Micro-6.1-x86_64
+      distribution_kernel_options: rd.kiwi.install.pass.bootparam=true rd.kiwi.install.pxe rd.kiwi.install.image=http://<FQDN SMLM>/pub/images/<server_type_1>/<image name> console=ttyS0,115200 console=tty0 security=selinux selinux=1 quiet systemd.show_status=1 net.ifnames=0
+
+loglevel:
+   # LOGLEVELS:
+   # DEBUG: info warning error debug
+   # INFO: info warning error
+   # WARNING: warning error
+   # ERROR: error
+   file: DEBUG
+   screen: DEBUG

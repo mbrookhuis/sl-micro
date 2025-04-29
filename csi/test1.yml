@@ -5,13 +5,13 @@ mi61-01:
   dnsserver: [192.168.100.1, 192.168.2.100]
   domain: mb.int
   server_type: mi61_default
-  template_combustion: mi61-default
-  template_ignition: mi61-default
+  template_combustion: mi61-default_example
+  template_ignition: mi61-default_example
   mac_address: "52:54:00:29:09:42"
   install_on_disk: /dev/vda
   parameters:
-    test1: blablabla
-    test2: bla
+    ACTIVATION_KEY: 1-sm61-dev
+    test1: bla
 
 mi61-02:
   ipaddress: 192.168.100.152
@@ -19,10 +19,10 @@ mi61-02:
   gateway: 192.168.100.1
   dnsserver: [192.168.100.1, 192.168.2.100]
   domain: mb.int
-  template_combustion: mi61-default
-  template_ignition: mi61-default
+  template_combustion: mi61-default_example
+  template_ignition: mi61-default_example
   server_type: mi61_extra
   install_on_disk: /dev/vda
   parameters:
-    test1: blablabla
-    test2: bla
+    ACTIVATION_KEY: 1-sm61-dev
+    test1: bla

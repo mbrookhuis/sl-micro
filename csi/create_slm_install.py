@@ -56,8 +56,8 @@ def validate_data(server, srv_data, delete_old):
     :return:
     """
     smt.log_debug("start validate_data")
-    # check if system is not already in SMLM. If and delete_old is true, delete system. If and delete_old is false
-    # throw an error.
+    # check if system is not already in SMLM. If it is present and delete_old is True, delete system.
+    # If it is present and delete_old is False throw an error.
     try:
         if not "." in srv_data['domain']:
             return f"The given domain {srv_data['domain']} has the wrong format"
@@ -171,15 +171,13 @@ def validate_data(server, srv_data, delete_old):
         if not param in smtools.CONFIGSM['server_types'][server_type]:
             return f"Mandatory parameter \"{param}\" not given in section \"server_types:{server_type}\" in configsm.yaml"
 
-
-
     smt.log_debug(f"Validation of data for {server} completed")
 
 
 
 def write_combustion(server, srv_data, delete_old):
     """
-    Write combustion script.
+    Write combustion csi.
     Also check if file is already present. If file is present, generate error
     when delete_old is false or remove file when delete_old is true.
     :param server:
@@ -193,7 +191,7 @@ def write_combustion(server, srv_data, delete_old):
     except KeyError:
         return f"In configsm no or invalid definition available for server type {srv_data['server_type']}"
     combustion_script = script_dir + "combustion/" + server + ".sh"
-    err = create_file(script_dir, combustion_script, delete_old)
+    err = check_file(script_dir, combustion_script)
     if err:
         return err
 
@@ -217,7 +215,7 @@ def write_combustion(server, srv_data, delete_old):
 
 def write_ignition(server, srv_data, delete_old):
     """
-    Write ignition script.
+    Write ignition csi.
     Also check if file is already present. If file is present, generate error
     when delete_old is false or remove file when delete_old is true.
 
@@ -234,7 +232,7 @@ def write_ignition(server, srv_data, delete_old):
     except KeyError:
         return f"In configsm no or invalid definition available for server type {srv_data['server_type']}"
     ignition_script = script_dir + "ignition/" + server + ".ign"
-    err = create_file(script_dir, ignition_script, delete_old)
+    err = check_file(script_dir, ignition_script)
     if err:
         return err
     hostname = server + "." + srv_data['domain']
@@ -248,23 +246,22 @@ def write_ignition(server, srv_data, delete_old):
             f.write(line)
     smt.log_debug(f"For server {server} create the following ignition file successful: {ignition_script}.")
 
-def create_file(script_dir, script_file, delete_old):
+def check_file(script_dir, script_file):
     """
-
+    check if the directory exists and create if missing.
+    delete the file when it is already present.
     :param script_dir:
     :param script_file:
-    :param delete_old:
     :return:
     """
     smt.log_debug("start create_file")
-    if not os.path.isdir(script_dir):
-        os.mkdir(script_dir)
-    if os.path.isfile(script_file):
-        if delete_old:
+    try:
+        if not os.path.isdir(script_dir):
+            os.mkdir(script_dir)
+        if os.path.isfile(script_file):
             os.remove(script_file)
-            return None
-        else:
-            return f"file {script_file} already exists and force deletion is not set"
+    except OSError:
+        return "error: validating for file failed."
     return None
 
 
@@ -306,10 +303,7 @@ def insert_lines_between_markers(file_template, file_target, lines_to_insert, st
 
 def create_profile_autoyast(server, srv_data, delete_old):
     """
-    This will create the needed profile in autoyast.
-    The following kernel options should be set:
-    - rd.kiwi.oem.installdevice=/dev/vda
-    -
+    This will create the necessary profile in autoyast.
     :param server:
     :param srv_data:
     :param delete_old:
@@ -336,10 +330,10 @@ def create_profile_autoyast(server, srv_data, delete_old):
 
 def create_distribution_autoyast(server, srv_data, delete_old):
     """
-    This will create the needed distribution in autoyast.
+    This will create the necessary distribution in autoyast.
 
-    If the distribution exist, validate the data and if different do:
-    - delete_old == true --> make the needed changes
+    If the distribution exists, validate the data and if different do:
+    - delete_old == true --> make the necessary changes
     - delete_old == false --> exit with error
     If the distribution doesn't exist, create it.
 
@@ -458,7 +452,7 @@ def main():
             perform_cleanup(args.cleanup)
         else:
             if not args.file:
-                print("The option --file is mandatory. Exiting script")
+                print("The option --file is mandatory. Exiting csi")
                 smt.exit_program(1)
             start_slm_creating(args.file, args.delete)
     except Exception as err:

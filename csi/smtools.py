@@ -9,7 +9,7 @@
 #
 # Created by: SUSE Michael Brookhuis,
 #
-# Description: This script contains standard function that can be used in several other scripts
+# Description: This csi contains standard function that can be used in several other scripts
 #
 #
 # coding: utf-8
